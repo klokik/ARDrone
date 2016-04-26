@@ -31,8 +31,7 @@
         </visual>
       </link>
 
-      <plugin name="model_location" filename="libmodel_location.so">
-      </plugin>
+      <plugin name="model_location" filename="libmodel_location.so" />
 
     </model>
   </world>

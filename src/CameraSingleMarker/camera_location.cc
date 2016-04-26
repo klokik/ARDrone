@@ -154,28 +154,26 @@ int main(int _argc, char **_argv)
   {
     gazebo::common::Time::MSleep(10);
 
-    // do some stuff
-    image_mutex.lock();
-    if (cam_mat.cols > 0 && cam_mat.rows > 0)
-    {
-      locateCamera(cam_mat);
-      frames--;
-      // cv::imshow("camera_0", cam_mat);
-    }
-    image_mutex.unlock();
-
-
     t += 0.01;
     ignition::math::Pose3<double> box_pose(
         ignition::math::Vector3d(0, 0, 3-std::sin(t)),
         ignition::math::Quaterniond(t, 0, 0));
-    gazebo::msgs::Pose msgp;
 
-    msgp.set_name("box");
-    gazebo::msgs::Set(msgp.mutable_position(), box_pose.Pos());
-    gazebo::msgs::Set(msgp.mutable_orientation(), box_pose.Rot());
+    image_mutex.lock();
+    if (cam_mat.cols > 0 && cam_mat.rows > 0)
+    {
+      box_pose = locateCamera(cam_mat);
+      frames--;
 
-    pub->Publish(msgp);
+      gazebo::msgs::Pose msgp;
+
+      msgp.set_name("box");
+      gazebo::msgs::Set(msgp.mutable_position(), box_pose.Pos());
+      gazebo::msgs::Set(msgp.mutable_orientation(), box_pose.Rot());
+
+      pub->Publish(msgp);
+    }
+    image_mutex.unlock();
 
     if (cv::waitKey(16) == 27)
       break;
