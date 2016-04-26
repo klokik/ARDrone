@@ -1,0 +1,3 @@
+export GAZEBO_PLUGIN_PATH=`pwd`/lib:$GAZEBO_PLUGIN_PATH
+export GAZEBO_MODEL_PATH=`pwd`/models:$GAZEBO_MODEL_PATH
+

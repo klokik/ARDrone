@@ -1,0 +1,46 @@
+abstract material ar/diamond_base
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.8 0.8 0.8 1.0
+			diffuse 0.95 0.95 0.95 1.0
+			specular 0.2 0.2 0.2 1.0 12.5
+
+			texture_unit
+			{
+				filtering none
+				scale 1.0 1.0
+			}
+		}
+	}
+}
+
+material ar/diamond1 : ar/diamond_base {
+	technique {
+		pass {
+			texture_unit {
+				texture diamond_1_2_3_4_d1_128_64.png
+}}}}
+
+material ar/diamond5 : ar/diamond_base {
+	technique {
+		pass {
+			texture_unit {
+				texture diamond_5_6_7_8_d1_128_64.png
+}}}}
+
+material ar/diamond9 : ar/diamond_base {
+	technique {
+		pass {
+			texture_unit {
+				texture diamond_9_10_11_12_d1_128_64.png
+}}}}
+
+material ar/diamond13 : ar/diamond_base {
+	technique {
+		pass {
+			texture_unit {
+				texture diamond_13_14_15_16_d1_128_64.png
+}}}}

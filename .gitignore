@@ -1,0 +1,6 @@
+bin/*
+lib/*
+
+src/*/build
+src/plugins/*/build
+
