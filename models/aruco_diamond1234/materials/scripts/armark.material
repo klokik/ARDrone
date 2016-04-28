@@ -12,6 +12,7 @@ abstract material ar/diamond_base
 			{
 				filtering none
 				scale 1.0 1.0
+				rotate 90
 			}
 		}
 	}
