@@ -18,6 +18,8 @@
 std::mutex image_mutex;
 cv::Mat cam_mat;
 
+ignition::math::Pose3<double> camera_pose_global;
+ignition::math::Pose3<double> marker_pose_global;
 
 /////////////////////////////////////////////////
 // Function is called everytime a message is received.
@@ -47,12 +49,51 @@ void cb(ConstImageStampedPtr &_msg)
   image_mutex.unlock();
 }
 
+void poseMsg(ConstPosePtr &_msg)
+{
+  auto mpos = _msg->position();
+  auto mrot = _msg->orientation();
+
+  auto new_pose = ignition::math::Pose3d(
+      ignition::math::Vector3d(mpos.x(), mpos.y(), mpos.z()),
+      ignition::math::Quaterniond(mrot.w(), mrot.x(), mrot.y(), mrot.z()));
+
+  if (_msg->name() == "camera_0")
+    camera_pose_global = new_pose;
+  else if(_msg->name() == "ar_diamond_0")
+    marker_pose_global = new_pose;
+  else {/*Ignore*/}
+}
+
+ignition::math::Pose3<double> convertFrame(cv::Vec3d _pos, cv::Vec3d _rot)
+{
+  using namespace ignition::math;
+
+  // Matrix3<double> perm( 0,-1, 0,
+  //                      -1, 0, 0,
+  //                       0, 0,-1);
+
+  auto S = Matrix3<double>::Identity; //perm;
+
+  Vector3<double> position(_pos[0], _pos[1], _pos[2]);
+  Vector3<double> rodrigues(_rot[0], _rot[1], _rot[2]);
+  float angle = rodrigues.Length();
+  auto axis = rodrigues.Normalize();
+
+  axis = S * axis;
+  position = S * position;
+
+  return Pose3<double>(-position, Quaterniond(axis, angle*0))+
+         Pose3<double>(Vector3<double>(0, 0, 0), Quaterniond(axis, -angle));
+}
+
 ignition::math::Pose3<double> locateCamera(cv::Mat &mat)
 {
   std::vector<int> ids;
   std::vector<std::vector<cv::Point2f>> marker_corners, diamond_corners;
   std::vector<cv::Vec4i> diamond_ids; 
-  cv::aruco::Dictionary dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_100);
+  cv::aruco::Dictionary dictionary =
+      cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_100);
 
   cv::aruco::detectMarkers(mat, dictionary, marker_corners, ids);
   if (ids.size() > 0)
@@ -65,8 +106,7 @@ ignition::math::Pose3<double> locateCamera(cv::Mat &mat)
   if (ids.size() > 0)
     cv::aruco::drawDetectedMarkers(mat_copy, marker_corners, ids);
 
-  ignition::math::Pose3<double> camera_pose(0, 0, 1.5, 0, 1.5708, 0); //0.229545, -1.18587, 1.17264,
-                                          //1.2e-5, 0.721964, 1.38702);
+  ignition::math::Pose3<double> camera_pose(0, 0, 1.5, 0, 1.5708, 0); // FALLBACK
 
   std::vector<cv::Vec3d> rvecs, tvecs;
   if (diamond_ids.size() > 0)
@@ -74,7 +114,7 @@ ignition::math::Pose3<double> locateCamera(cv::Mat &mat)
     float square_size = 0.1;
 
     double hfov = 1.047;  // 60 degrees
-    double fx = mat.cols*std::tan(hfov/2)/2;
+    double fx = mat.cols/std::tan(hfov/2)/2;
     double fy = fx*mat.rows/mat.cols;
 
 
@@ -85,37 +125,17 @@ ignition::math::Pose3<double> locateCamera(cv::Mat &mat)
 
     cv::aruco::estimatePoseSingleMarkers(diamond_corners, square_size,
         prj_matrix, dist_coeffs, rvecs, tvecs);
-    // std::cout << "diam_rvec_size " << rvecs.size() << std::endl;
 
     for (size_t i = 0; i< diamond_ids.size(); ++i)
-      cv::aruco::drawAxis(mat_copy, prj_matrix, dist_coeffs, rvecs[i], tvecs[i], square_size*2);
+      cv::aruco::drawAxis(mat_copy, prj_matrix, dist_coeffs,
+          rvecs[i], tvecs[i], square_size*2);
     cv::aruco::drawDetectedDiamonds(mat_copy, diamond_corners, diamond_ids);
 
     assert(diamond_ids.size() == 1);
-    double x = tvecs[0][2]*3;
-    double y = -tvecs[0][0];
-    double z = -tvecs[0][1];
-    ignition::math::Vector3<double> mark_local_translation(x, y, z);
 
-    double rx = rvecs[0][2];
-    double ry = -rvecs[0][0];
-    double rz = -rvecs[0][1];
-    ignition::math::Vector3<double> rodrigues(rx, ry, rz);
-    double rodrigues_angle = rodrigues.Length();
-    rodrigues = (rodrigues*ignition::math::Vector3<double>(3, 1, 1)).Normalize();
-    ignition::math::Quaternion<double> mark_local_rotation(rodrigues, rodrigues_angle);
+    auto camera_pose_marker_frame = convertFrame(tvecs[0], rvecs[0]);
 
-    ignition::math::Pose3<double> mark_pose_local(mark_local_translation, mark_local_rotation);
-    ignition::math::Pose3<double> mark_pose_global(0, 0, 0.05, 0, 0, 0); //(2, 0.1, 1, 0, 1.57079, 0);//0.619463, 0.072396, 0.01, 0, 0, 0);
-    // std::cout << "pose_local " << mark_pose_local << std::endl;
-
-    // auto pos = mark_pose_global.Pos();
-    // x = pos.X() - x;
-    // y = pos.Y() - y;
-    // z = pos.Z() - z;
-
-    // std::cout << "[" << roll << ", " << pitch << ", " << yaw << "]" << std::endl;
-    camera_pose = -mark_pose_local + mark_pose_global;
+    camera_pose = camera_pose_marker_frame + marker_pose_global;
     std::cout << camera_pose << std::endl;
   }
 
@@ -137,6 +157,12 @@ int main(int _argc, char **_argv)
   // Listen to camera image topic
   gazebo::transport::SubscriberPtr sub =
       node->Subscribe("~/camera_0/camera_0/link/camera/image", cb);
+
+  gazebo::transport::SubscriberPtr pose_sub_cam =
+      node->Subscribe("~/camera_0/pose/info", poseMsg);
+
+  gazebo::transport::SubscriberPtr pose_sub_diam =
+      node->Subscribe("~/ar_diamond_0/pose/info", poseMsg);
 
 /*  auto *database = gazebo::common::ModelDatabase::Instance();
   auto models = database->GetModels();
