@@ -103,6 +103,11 @@ int main(int _argc, char **_argv)
       node->Advertise<gazebo::msgs::Pose>(camera_mod_address);
   gzmsg << "Altering `camera_0` model location on " << camera_mod_address << std::endl;
 
+  std::string marker_mod_address = "~/ar_diamond_0/pose/modify";
+  gazebo::transport::PublisherPtr marker_pub =
+      node->Advertise<gazebo::msgs::Pose>(marker_mod_address);
+  gzmsg << "Altering `ar_diamond_0` model location on " << marker_mod_address << std::endl;
+
   float t = 0;
   int frames = 10;
   while (true)
@@ -140,6 +145,15 @@ int main(int _argc, char **_argv)
       gazebo::msgs::Set(msgp.mutable_orientation(), cam_pose.Rot());
 
       camera_0_pub->Publish(msgp);
+
+      ignition::math::Pose3<double> mark_pose =
+          ignition::math::Pose3<double>(0, 0, 0, 0, std::sin(t/2), 0);
+
+      msgp.set_name("ar_diamond_0");
+      gazebo::msgs::Set(msgp.mutable_position(), mark_pose.Pos());
+      gazebo::msgs::Set(msgp.mutable_orientation(), mark_pose.Rot());
+
+      marker_pub->Publish(msgp);
 
     }
     image_mutex.unlock();
