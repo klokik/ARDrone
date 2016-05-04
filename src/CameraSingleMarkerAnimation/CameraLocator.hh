@@ -8,26 +8,26 @@
 #include <ignition/math/Pose3.hh>
 
 
-ignition::math::Pose3<double> convertFrame(cv::Vec3d _pos, cv::Vec3d _rot)
+ignition::math::Pose3d convertFrame(cv::Vec3d _pos, cv::Vec3d _rot)
 {
   using namespace ignition::math;
 
-  auto S = Matrix3<double>::Identity;
+  auto S = Matrix3d::Identity;
 
-  Vector3<double> position(_pos[0], _pos[1], _pos[2]);
-  Vector3<double> rodrigues(_rot[0], _rot[1], _rot[2]);
+  Vector3d position(_pos[0], _pos[1], _pos[2]);
+  Vector3d rodrigues(_rot[0], _rot[1], _rot[2]);
   float angle = rodrigues.Length();
   auto axis = rodrigues.Normalize();
 
   axis = S * axis;
   position = S * position;
 
-  return Pose3<double>(-position, Quaterniond(axis, angle*0))+
-         Pose3<double>(Vector3<double>(0, 0, 0), Quaterniond(axis, -angle));
+  return Pose3d(-position, Quaterniond(axis, angle*0))+
+         Pose3d(Vector3d(0, 0, 0), Quaterniond(axis, -angle));
 }
 
-ignition::math::Pose3<double> locateCamera(cv::Mat &mat,
-	ignition::math::Pose3<double> &marker_pose_global)
+ignition::math::Pose3d locateCamera(cv::Mat &mat,
+	ignition::math::Pose3d &marker_pose_global)
 {
   std::vector<int> ids;
   std::vector<std::vector<cv::Point2f>> marker_corners, diamond_corners;
@@ -46,7 +46,7 @@ ignition::math::Pose3<double> locateCamera(cv::Mat &mat,
   if (ids.size() > 0)
     cv::aruco::drawDetectedMarkers(mat_copy, marker_corners, ids);
 
-  ignition::math::Pose3<double> camera_pose(0, 0, 1.5, 0, 1.5708, 0); // FALLBACK
+  ignition::math::Pose3d camera_pose(0, 0, 1.5, 0, 1.5708, 0); // FALLBACK
 
   std::vector<cv::Vec3d> rvecs, tvecs;
   if (diamond_ids.size() > 0)
@@ -77,8 +77,6 @@ ignition::math::Pose3<double> locateCamera(cv::Mat &mat,
 
     camera_pose = camera_pose_marker_frame + marker_pose_global;
     std::cout << camera_pose << std::endl;
-    // auto err = (camera_pose.Pos()-camera_pose_global.Pos()).Length();
-    // std::cout << "Location error: " << err << std::endl;
   }
 
   cv::imshow("camera_0", mat_copy);

@@ -20,8 +20,8 @@
 std::mutex image_mutex;
 cv::Mat cam_mat;
 
-ignition::math::Pose3<double> camera_pose_global;
-ignition::math::Pose3<double> marker_pose_global;
+ignition::math::Pose3d camera_pose_global;
+ignition::math::Pose3d marker_pose_global;
 
 /////////////////////////////////////////////////
 // Function is called everytime a message is received.
@@ -115,7 +115,7 @@ int main(int _argc, char **_argv)
     gazebo::common::Time::MSleep(10);
 
     t += 0.01;
-    ignition::math::Pose3<double> box_pose(
+    ignition::math::Pose3d box_pose(
         ignition::math::Vector3d(0, 0, 3-std::sin(t)),
         ignition::math::Quaterniond(t, 0, 0));
 
@@ -136,9 +136,9 @@ int main(int _argc, char **_argv)
 
       box_pub->Publish(msgp);
 
-      ignition::math::Pose3<double> cam_pose =
-          ignition::math::Pose3<double>(-2+std::sin(t), 0, 0, 0, 0, 0)+
-          ignition::math::Pose3<double>(0, 0, 0, 0, M_PI/3, t);
+      ignition::math::Pose3d cam_pose =
+          ignition::math::Pose3d(-2+std::sin(t), 0, 0, 0, 0, 0)+
+          ignition::math::Pose3d(0, 0, 0, 0, M_PI/3, t);
 
       msgp.set_name("camera_0");
       gazebo::msgs::Set(msgp.mutable_position(), cam_pose.Pos());
@@ -146,8 +146,8 @@ int main(int _argc, char **_argv)
 
       camera_0_pub->Publish(msgp);
 
-      ignition::math::Pose3<double> mark_pose =
-          ignition::math::Pose3<double>(0, 0, 0, 0, std::sin(t/2), 0);
+      ignition::math::Pose3d mark_pose =
+          ignition::math::Pose3d(0, 0, 0, 0, std::sin(t/2), 0);
 
       msgp.set_name("ar_diamond_0");
       gazebo::msgs::Set(msgp.mutable_position(), mark_pose.Pos());
