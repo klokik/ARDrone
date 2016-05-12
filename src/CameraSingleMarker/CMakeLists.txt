@@ -16,8 +16,9 @@ find_package(Threads REQUIRED)
 # set_property(TARGET ArUco PROPERTY IMPORTED_LOCATION ${ARUCO_LIBRARY_PATH})
 
 #set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${IGNITION-MATH_CXX_FLAGS})
+set(CMAKE_CXX_STANDARD 14)
 
-include_directories(${GAZEBO_INCLUDE_DIRS} ${IGNITION-MATH_INCLUDE_DIRS})
+include_directories(${GAZEBO_INCLUDE_DIRS} ${IGNITION-MATH_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/../../include)
 link_directories(${GAZEBO_LIBRARY_DIRS} ${IGNITION-MATH_LIBRARY_DIRS})
 list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
@@ -30,6 +31,8 @@ set(ALL_LIBS
 
 add_executable(marker_location marker_location.cc)
 add_executable(camera_location camera_location.cc)
+add_executable(camera_location_api camera_location_api.cc)
 
 target_link_libraries(marker_location ${ALL_LIBS})
 target_link_libraries(camera_location ${ALL_LIBS})
+target_link_libraries(camera_location_api ${ALL_LIBS})

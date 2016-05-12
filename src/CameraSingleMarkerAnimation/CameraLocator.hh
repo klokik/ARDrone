@@ -77,6 +77,8 @@ ignition::math::Pose3d locateCamera(cv::Mat &mat,
 
     camera_pose = camera_pose_marker_frame + marker_pose_global;
     std::cout << camera_pose << std::endl;
+    // auto err = (camera_pose.Pos()-camera_pose_global.Pos()).Length();
+    // std::cout << "Location error: " << err << std::endl;
   }
 
   cv::imshow("camera_0", mat_copy);
