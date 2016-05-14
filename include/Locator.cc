@@ -48,21 +48,35 @@ class Locator
 
     ignition::math::Pose3d pose_avg;
 
+    if (weight_sum < 1e-3)
+      return pose_avg;
+
     double weight_sum_partial = 0;
+    int accounted_features = 0;
 
     for (size_t i = 0; i < weights.size(); ++i)
     {
       if (weights[i] < 1e-6)
         continue;
 
+      accounted_features++;
+
       double iweight = weight_sum_partial/(weight_sum_partial+weights[i]);
+
+      if (!(iweight < 1 && iweight > 0) && (weight_sum_partial > 0))
+      {
+        std::cout << "iweight: " << iweight << std::endl;
+        assert(iweight < 1 && iweight > 0);
+      }
+
       weight_sum_partial += weights[i];
 
       pose_avg.Pos() = pose_avg.Pos()*iweight + positions[i]*(1-iweight);
-      pose_avg.Rot() = ignition::math::Quaterniond::Slerp(iweight, pose_avg.Rot(), orientations[i]);
+      pose_avg.Rot() = ignition::math::Quaterniond::Slerp(1-iweight, pose_avg.Rot(), orientations[i]);
     }
 
-    pose_avg.Rot().Normalize();
+    std::cout << "Features: " << weights.size() << " : "
+              << accounted_features << std::endl;
 
     return pose_avg;
   }
@@ -192,6 +206,8 @@ class ArLocator: public Locator<ArFeatures, cv::Mat>
           this->last_input_frame.diamond_rate,
           diamond_corners, diamond_ids);
 
+      cv::aruco::drawDetectedDiamonds(_data, diamond_corners, diamond_ids);
+
       for (size_t i = 0; i < diamond_ids.size(); ++i)
         this->last_input_frame.diamonds[diamond_ids[i]] = diamond_corners[i];
     }
@@ -229,7 +245,8 @@ class ArLocator: public Locator<ArFeatures, cv::Mat>
     auto camera_pose_marker_frame = this->convertFrame(tvecs[0], rvecs[0]);
 
     auto est_pose = (camera_pose_marker_frame + _feature.second);
-    double confidence = 1;
+    double confidence = getQuadrilateralArea(diamond_corners[0]);
+    // std::cout << "Conf: " << confidence << std::endl;
     return {est_pose, confidence};
   }
 
@@ -244,6 +261,28 @@ class ArLocator: public Locator<ArFeatures, cv::Mat>
 
     return Pose3d(-position, Quaterniond(axis, 0)) +
            Pose3d(Vector3d(0, 0, 0), Quaterniond(axis, -angle));
+  }
+
+  private: double getQuadrilateralArea(std::vector<cv::Point2f> const &_corners)
+  {
+    cv::Point2f A, B, C, D;
+
+    std::tie(A, B, C, D) = std::tie(_corners[0], _corners[1],
+                                    _corners[2], _corners[3]);
+
+    auto a = cv::norm(B-A);
+    auto b = cv::norm(C-B);
+    auto c = cv::norm(A-C);
+    auto d = cv::norm(D-C);
+    auto e = cv::norm(A-D);
+
+    auto p1 = (a+b+c)/2;
+    auto p2 = (c+d+e)/2;
+
+    auto s1 = std::sqrt(p1*(p1-a)*(p1-b)*(p1-c));
+    auto s2 = std::sqrt(p2*(p2-c)*(p2-d)*(p2-e));
+
+    return s1+s2;
   }
 
   public: std::map<CameraId, CameraProperties> cameras;
