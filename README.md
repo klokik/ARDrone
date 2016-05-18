@@ -22,3 +22,6 @@ make
 
 ### Running examples
 When you build the project a bunch of examples would be created in the `bin` folder. To run these examples you first need to start `gazebo` with appropriate world.
+
+### Docs
+This project is the objective of the therm paper for my senior year at the uni. The paper text is located in the `docs` directory.
