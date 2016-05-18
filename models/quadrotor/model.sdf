@@ -120,8 +120,8 @@
           <camera>
             <horizontal_fov>1.5709</horizontal_fov>
             <image>
-              <width>320</width>
-              <height>240</height>
+              <width>640</width>
+              <height>640</height>
             </image>
             <clip>
               <near>0.1</near>
@@ -141,8 +141,8 @@
       <axis>
         <xyz>0 1 0</xyz>
         <limit>
-          <upper>1.5709</upper>
-          <lower>-1.5709</lower>
+          <upper>0</upper>
+          <lower>0</lower>
         </limit>
       </axis>
     </joint>
