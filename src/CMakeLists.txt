@@ -1,0 +1,7 @@
+
+add_subdirectory(CameraSingleMarker)
+add_subdirectory(CameraSingleMarkerAnimation)
+add_subdirectory(MultipleMarkers)
+add_subdirectory(DroneStabilizationManual)
+
+add_subdirectory(plugins)

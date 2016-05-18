@@ -4,3 +4,5 @@ lib/*
 src/*/build
 src/plugins/*/build
 
+build/*
+
