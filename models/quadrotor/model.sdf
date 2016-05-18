@@ -2,7 +2,7 @@
 <sdf version="1.5">
   <model name="quadrotor">
     <plugin name="model_location" filename="libmodel_location.so"/>
-    <plugin name="model_push_torque" filename="libmodel_push_torque.so"/>
+    <plugin name="model_force_torque" filename="libmodel_force_torque.so"/>
     <link name="quadrotor_link">
       <pose>0 0 0.182466 0 0 0</pose>
       <inertial>

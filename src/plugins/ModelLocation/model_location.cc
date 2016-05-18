@@ -31,9 +31,18 @@ void ModelLocation::OnPoseMsg(ConstPosePtr &_msg)
   auto mpos = _msg->position();
   auto mrot = _msg->orientation();
 
-  this->model->SetWorldPose(
-      ignition::math::Pose3d(ignition::math::Vector3d(mpos.x(), mpos.y(), mpos.z()),
-                             ignition::math::Quaterniond(mrot.w(), mrot.x(), mrot.y(), mrot.z())));
+  auto gpos = gazebo::math::Vector3(mpos.x(), mpos.y(), mpos.z());
+  auto grot = gazebo::math::Quaternion(mrot.w(), mrot.x(), mrot.y(), mrot.z());
+
+  if (_msg->has_id())
+  {
+    if (_msg->id() == 1)
+      gpos = this->model->GetWorldPose().pos;
+    if (_msg->id() == 2)
+      grot = this->model->GetWorldPose().rot;
+  }
+
+  this->model->SetWorldPose({gpos, grot});
 }
 
 /////////////////////////////////////////////////
@@ -59,7 +68,7 @@ void ModelLocation::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
         << std::endl;
 
   this->lastUpdateTime = common::Time(0.0);
-  this->updatePeriod = common::Time(1.0/30);
+  this->updatePeriod = common::Time(1.0/200);
 
   this->updateConnection = event::Events::ConnectWorldUpdateBegin(
       boost::bind(&ModelLocation::OnUpdate, this, _1));

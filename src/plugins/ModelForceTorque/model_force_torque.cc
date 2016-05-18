@@ -44,11 +44,12 @@ void ModelForceTorque::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   this->node->Init(this->world->GetName());
 
   // FIXME: set link name in SDF file
-  this->link = this->model->GetLink("quadrotor");
+  this->link = this->model->GetLink("quadrotor_link");
+  GZ_ASSERT(this->link != nullptr, "Link not found");
 
   // Create the subscriber
   std::string topicName = std::string("~/") + _parent->GetName()
-    + "/link/";
+    + "/force/";
   this->forceSubscriber = node->Subscribe(
       topicName + "add_force", &ModelForceTorque::OnForceMsg, this);
   this->torqueSubscriber = node->Subscribe(
@@ -63,6 +64,11 @@ void ModelForceTorque::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 /////////////////////////////////////////////////
 void ModelForceTorque::OnUpdate(const common::UpdateInfo &_info)
 {
-  this->link->AddForce(this->lastForce);
-  this->link->AddTorque(this->lastTorque);
+  if (this->link)
+  {
+    auto CoG = this->link->GetWorldCoGPose().pos;
+    this->link->AddForceAtWorldPosition(this->lastForce, CoG);
+    // this->link->AddLinkForce(this->lastForce);
+    this->link->AddTorque(this->lastTorque);
+  }
 }
