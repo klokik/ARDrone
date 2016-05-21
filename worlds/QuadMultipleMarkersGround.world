@@ -1,0 +1,1504 @@
+<sdf version='1.6'>
+  <world name='default'>
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose frame=''>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <model name='ground_plane'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <contact>
+              <collide_bitmask>65535</collide_bitmask>
+              <ode/>
+            </contact>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics name='default_physics' default='0' type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <audio>
+      <device>default</device>
+    </audio>
+    <wind/>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <model name='quadrotor'>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <plugin name='model_force_torque' filename='libmodel_force_torque.so'/>
+      <link name='quadrotor_link'>
+        <pose frame=''>0 0 0.182466 0 -0 0</pose>
+        <inertial>
+          <mass>1.316</mass>
+          <inertia>
+            <ixx>0.0128</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0128</iyy>
+            <iyz>0</iyz>
+            <izz>0.0218</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://quadrotor/meshes/quadrotor_base.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://quadrotor/meshes/quadrotor_base.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <sensor name='imu_sensor' type='imu'>
+          <always_on>1</always_on>
+          <update_rate>100</update_rate>
+          <imu>
+            <angular_velocity>
+              <x>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.0002</stddev>
+                  <bias_mean>7.5e-06</bias_mean>
+                  <bias_stddev>8e-07</bias_stddev>
+                </noise>
+              </x>
+              <y>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.0002</stddev>
+                  <bias_mean>7.5e-06</bias_mean>
+                  <bias_stddev>8e-07</bias_stddev>
+                </noise>
+              </y>
+              <z>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.0002</stddev>
+                  <bias_mean>7.5e-06</bias_mean>
+                  <bias_stddev>8e-07</bias_stddev>
+                </noise>
+              </z>
+            </angular_velocity>
+            <linear_acceleration>
+              <x>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.017</stddev>
+                  <bias_mean>0.1</bias_mean>
+                  <bias_stddev>0.001</bias_stddev>
+                </noise>
+              </x>
+              <y>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.017</stddev>
+                  <bias_mean>0.1</bias_mean>
+                  <bias_stddev>0.001</bias_stddev>
+                </noise>
+              </y>
+              <z>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.017</stddev>
+                  <bias_mean>0.1</bias_mean>
+                  <bias_stddev>0.001</bias_stddev>
+                </noise>
+              </z>
+            </linear_acceleration>
+            <angular_velocity/>
+            <linear_acceleration/>
+          </imu>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+        </sensor>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <model name='camera'>
+        <pose frame=''>0 0 0.06 3.14159 1.57069 3.14159</pose>
+        <link name='link'>
+          <inertial>
+            <mass>0.1</mass>
+            <inertia>
+              <ixx>0.000166667</ixx>
+              <iyy>0.000166667</iyy>
+              <izz>0.000166667</izz>
+              <ixy>0</ixy>
+              <ixz>0</ixz>
+              <iyz>0</iyz>
+            </inertia>
+          </inertial>
+          <collision name='collision'>
+            <geometry>
+              <box>
+                <size>0.03 0.03 0.03</size>
+              </box>
+            </geometry>
+            <max_contacts>10</max_contacts>
+            <surface>
+              <contact>
+                <ode/>
+              </contact>
+              <bounce/>
+              <friction>
+                <torsional>
+                  <ode/>
+                </torsional>
+                <ode/>
+              </friction>
+            </surface>
+          </collision>
+          <visual name='visual'>
+            <geometry>
+              <box>
+                <size>0.03 0.03 0.03</size>
+              </box>
+            </geometry>
+          </visual>
+          <sensor name='camera' type='camera'>
+            <camera name='__default__'>
+              <horizontal_fov>1.5709</horizontal_fov>
+              <image>
+                <width>1024</width>
+                <height>1024</height>
+              </image>
+              <clip>
+                <near>0.1</near>
+                <far>100</far>
+              </clip>
+            </camera>
+            <always_on>1</always_on>
+            <update_rate>60</update_rate>
+            <visualize>1</visualize>
+          </sensor>
+          <self_collide>0</self_collide>
+          <enable_wind>0</enable_wind>
+          <kinematic>0</kinematic>
+          <gravity>1</gravity>
+        </link>
+      </model>
+      <joint name='joint_camera' type='revolute'>
+        <child>camera::link</child>
+        <parent>quadrotor_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <upper>0</upper>
+            <lower>0</lower>
+          </limit>
+          <use_parent_model_frame>0</use_parent_model_frame>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <pose frame=''>0.016609 -0.01337 0 0 -0 0</pose>
+    </model>
+    
+    <model name='ar_diamond_0'>
+      <static>1</static>
+      <pose frame=''>1.3468501672389213 -3.4336992014177694 0.005 0 -0 1.9669964641419382</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond0</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_4'>
+      <static>1</static>
+      <pose frame=''>-1.6766547613602958 -0.9673560302015884 0.005 0 -0 5.464437784081811</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond4</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_8'>
+      <static>1</static>
+      <pose frame=''>4.948106934696172 3.1484006248614858 0.005 0 -0 1.5179545625100848</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond8</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_12'>
+      <static>1</static>
+      <pose frame=''>0.3305801614510395 -1.8033106780806718 0.005 0 -0 3.1259020360577137</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond12</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_16'>
+      <static>1</static>
+      <pose frame=''>-0.31085908979387433 -1.3079833964713172 0.005 0 -0 0.1047624805899468</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond16</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_20'>
+      <static>1</static>
+      <pose frame=''>3.205187058208539 0.9152628460158487 0.005 0 -0 1.0051980915950731</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond20</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_24'>
+      <static>1</static>
+      <pose frame=''>-2.475180197687549 -1.5503802481832905 0.005 0 -0 4.023945216065765</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond24</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_28'>
+      <static>1</static>
+      <pose frame=''>4.721502042637912 -4.716364841396251 0.005 0 -0 2.646178504456357</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond28</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_32'>
+      <static>1</static>
+      <pose frame=''>-3.203577216441038 4.652700269356751 0.005 0 -0 4.108947974891464</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond32</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_36'>
+      <static>1</static>
+      <pose frame=''>-3.679144884691501 2.877106129911989 0.005 0 -0 4.631946816163287</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond36</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_40'>
+      <static>1</static>
+      <pose frame=''>-3.1182612430321974 -1.4925706976262196 0.005 0 -0 1.9325071245113548</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond40</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_44'>
+      <static>1</static>
+      <pose frame=''>-1.7981231538664098 0.34634929962117056 0.005 0 -0 5.896757860841978</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond44</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_48'>
+      <static>1</static>
+      <pose frame=''>-4.447082450702936 3.2404548154550703 0.005 0 -0 2.2996772454054892</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond48</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_52'>
+      <static>1</static>
+      <pose frame=''>-1.5355103431045847 -2.58504802864394 0.005 0 -0 6.101952424601239</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond52</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_56'>
+      <static>1</static>
+      <pose frame=''>4.134854285891871 2.9116797988430507 0.005 0 -0 3.4649578620486388</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond56</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_60'>
+      <static>1</static>
+      <pose frame=''>-2.8401822152797784 0.5915863608899397 0.005 0 -0 3.448918063520319</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond60</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_64'>
+      <static>1</static>
+      <pose frame=''>-0.041185205214262055 4.390406309402852 0.005 0 -0 3.3112252856770583</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond64</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_68'>
+      <static>1</static>
+      <pose frame=''>0.13989940241559573 4.961472346476347 0.005 0 -0 0.4185815313503492</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond68</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_72'>
+      <static>1</static>
+      <pose frame=''>-1.9944093869127801 -0.0020314707441926316 0.005 0 -0 1.06229549355772</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond72</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_76'>
+      <static>1</static>
+      <pose frame=''>4.890624667412048 -1.0297226985938912 0.005 0 -0 4.024436937736044</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond76</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_80'>
+      <static>1</static>
+      <pose frame=''>4.202244496907653 -3.33527635829328 0.005 0 -0 0.054819803825498344</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond80</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_84'>
+      <static>1</static>
+      <pose frame=''>3.0983577883206728 1.1024678718071126 0.005 0 -0 0.3020675641212306</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond84</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_88'>
+      <static>1</static>
+      <pose frame=''>-4.378138106804813 4.361489901122363 0.005 0 -0 2.823614644704497</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond88</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_92'>
+      <static>1</static>
+      <pose frame=''>1.5729671831838923 -2.640111331375672 0.005 0 -0 6.031877307839594</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond92</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <model name='ar_diamond_96'>
+      <static>1</static>
+      <pose frame=''>-3.638921365143286 0.44300394970700285 0.005 0 -0 4.208892455921714</pose>
+      <plugin name='model_location' filename='libmodel_location.so'/>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.3125 0.3125 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_diamond1234/materials/scripts</uri>
+              <uri>model://aruco_diamond1234/materials/textures</uri>
+              <name>ar/diamond96</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    
+    <state world_name='default'>
+      <sim_time>53 130000000</sim_time>
+      <real_time>58 464271132</real_time>
+      <wall_time>1463431385 8546299</wall_time>
+      <iterations>53130</iterations>
+      <model name='ground_plane'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='quadrotor'>
+        <pose frame=''>0.015979 -0.013367 0 2e-06 -2e-06 -0.074589</pose>
+        <scale>1 1 1</scale>
+        <link name='quadrotor_link'>
+          <pose frame=''>0.015978 -0.013367 0.182466 2e-06 -2e-06 -0.074589</pose>
+          <velocity>0.004115 0.001462 0.003994 -0.009501 0.022831 -0.002211</velocity>
+          <acceleration>9.218 3.56453 8.02769 2.76575 -0.407755 -0.102556</acceleration>
+          <wrench>12.1309 4.69092 10.5644 0 -0 0</wrench>
+        </link>
+        <model name='camera'>
+          <pose frame=''>0.016609 -0.01337 0.06 3.14159 1.57069 3.14159</pose>
+          <scale>1 1 1</scale>
+          <link name='link'>
+            <pose frame=''>0.015979 -0.013367 0.06 3.13249 1.57069 3.05789</pose>
+            <velocity>0.001285 1.7e-05 0.003993 -0.012635 0.000944 -0.00337</velocity>
+            <acceleration>3.06535 0.571982 8.02729 0.98142 1.10196 0.762857</acceleration>
+            <wrench>0.306535 0.057198 0.802729 0 -0 0</wrench>
+          </link>
+        </model>
+      </model>
+      <light name='sun'>
+        <pose frame=''>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>1.32646 -2.37043 1.66953 0 0.279643 2.02019</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+  </world>
+</sdf>
