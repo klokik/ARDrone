@@ -15,6 +15,8 @@
 gazebo::common::Time last_pos_time;
 ignition::math::Pose3d quad_pose;
 
+bool has_new_position = false;
+
 
 void poseMsg(ConstPosePtr &_msg)
 {
@@ -28,7 +30,10 @@ void poseMsg(ConstPosePtr &_msg)
       ignition::math::Quaterniond(mrot.w(), mrot.x(), mrot.y(), mrot.z()));
 
   if (_msg->name() == "quadrotor")
+  {
     quad_pose = new_pose;
+    has_new_position = true;
+  }
   else {/*Ignore*/}
 }
 
@@ -110,9 +115,16 @@ int main(int _argc, char **_argv)
   ignition::math::Pose3d desired_pose(0, 2, 3, 0, 0, 0);
 
   int32_t ms_loop = 10;
+  float dt_sum = 0;
   while (true)
   {
     gazebo::common::Time::MSleep(ms_loop);
+    dt_sum += ms_loop;
+
+    if (!has_new_position)
+      continue;
+    else
+      has_new_position = false;
 
     ignition::math::Vector3d force;
     ignition::math::Vector3d torque;
@@ -122,7 +134,7 @@ int main(int _argc, char **_argv)
     auto mdirection = quad_pose.Pos() - desired_pose.Pos();
     auto distance = mdirection.Length();
 
-    auto dt = gazebo::common::Time(0, ms_loop*1000000);
+    auto dt = gazebo::common::Time(0, dt_sum*1000000);
     auto x_err = mdirection.X();
     auto y_err = mdirection.Y();
     auto z_err = mdirection.Z();
