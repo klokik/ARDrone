@@ -1,0 +1,3 @@
+
+add_executable(generate_diamond_material generate_diamond_material.cc)
+target_link_libraries(generate_diamond_material ${ARDRONE_LIBS})
