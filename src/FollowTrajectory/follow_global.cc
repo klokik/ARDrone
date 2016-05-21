@@ -11,6 +11,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <mutex>
+#include <deque>
 #include <queue>
 
 #include "HelperMath.hh"
@@ -131,7 +132,7 @@ class UAVController
     ignition::math::Matrix3d directed_frame;
     directed_frame.Axes(dir_x, dir_y, dir_z);
 
-    auto desired_orient = matrixToQuaternion(directed_frame);
+    auto desired_orient = helper::matrixToQuaternion(directed_frame);
 
     // reduce model tilt when it's closer to target
     auto iweight = std::exp(-distance/10);
@@ -141,7 +142,12 @@ class UAVController
     this->applyForce(force);
     // this->applyTorque(torque);
 
-    this->applyOrientation(desired_orient);
+
+    this->orientation_history.push_back(desired_orient);
+    while (this->orientation_history.size() > this->or_q_size)
+      this->orientation_history.pop_front();
+
+    this->applyOrientation(helper::avgOrientation(this->orientation_history));
   }
 
   public: void applyForce(ignition::math::Vector3d const &_force)
@@ -190,8 +196,10 @@ class UAVController
 
   protected: const int pose_q_size = 8;
   protected: const int imu_q_size = 100;
+  protected: const int or_q_size = 20;
   protected: std::queue<std::pair<gazebo::common::Time, ignition::math::Pose3d>> pose_history;
   protected: std::queue<IMUFrame> imu_history;
+  protected: std::deque<ignition::math::Quaterniond> orientation_history;
 
   protected: ignition::math::Vector3d target_position;
 
@@ -305,8 +313,12 @@ int main(int _argc, char **_argv)
     auto target_point = desired_pose.Pos();
 
     // wait until quad is close to taget
-    if (uav_ctrl.distanceToTarget() < 0.5)
+    if (uav_ctrl.distanceToTarget() < 1)
+    {
       traj.position += 1;
+      if (traj.position > traj.length())
+        traj.position = 0;
+    }
 
     uav_ctrl.setTargetPoint(traj.getTrajectoryPoint());
     uav_ctrl.update(dt);
