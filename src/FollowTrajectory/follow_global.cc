@@ -67,6 +67,11 @@ class UAVController
     this->target_position = _targ;
   }
 
+  public: double distanceToTarget()
+  {
+    return (this->global_pose.Pos() - this->target_position).Length();
+  }
+
   // TODO: Use pose_stamped
   protected: void uavPoseMsg(ConstPosePtr &_msg)
   {
@@ -214,7 +219,7 @@ struct Trajectory
   public: std::vector<std::pair<double, ignition::math::Vector3d>> waypoints;
 
   // current position on the path (in seconds)
-  double position;
+  double position = 0;
 
   double length()
   {
@@ -249,6 +254,11 @@ struct Trajectory
     return this->waypoints.rbegin()->second;
   }
 
+  ignition::math::Vector3d getTrajectoryPoint()
+  {
+    return getTrajectoryPoint(this->position);
+  }
+
   void addWaypoint(double const &_seg_dt, ignition::math::Vector3d const &_pos)
   {
     this->waypoints.push_back({_seg_dt, _pos});
@@ -271,16 +281,34 @@ int main(int _argc, char **_argv)
 
   uav_ctrl.initTransport(node);
 
+  Trajectory traj;
+
+  for (double phi = 0; phi < M_PI*2; phi += 0.1)
+  {
+    double R = 10;
+
+    double r = std::cos(phi*3)*R;
+
+    auto x = r * std::cos(phi);
+    auto y = r * std::sin(phi);
+    auto z = 2.0;
+
+    traj.addWaypoint(1, ignition::math::Vector3d(x, y, z));
+  }
+
   int32_t loop_time = 10;
   while (true)
   {
     gazebo::common::Time::MSleep(loop_time);
+    auto dt = gazebo::common::Time(0, loop_time*1000000);
 
     auto target_point = desired_pose.Pos();
 
-    uav_ctrl.setTargetPoint(target_point);
+    // wait until quad is close to taget
+    if (uav_ctrl.distanceToTarget() < 0.5)
+      traj.position += 1;
 
-    auto dt = gazebo::common::Time(0, loop_time*1000000);
+    uav_ctrl.setTargetPoint(traj.getTrajectoryPoint());
     uav_ctrl.update(dt);
   }
 
