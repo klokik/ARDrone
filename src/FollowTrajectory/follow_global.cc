@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <fstream>
 #include <stdexcept>
 #include <mutex>
 #include <deque>
@@ -84,7 +85,11 @@ class UAVController
         ignition::math::Quaterniond(mrot.w(), mrot.x(), mrot.y(), mrot.z()));
 
     if (_msg->name() == this->model_name)
+    {
       this->global_pose = new_pose;
+      // DEBUG
+      this->estimated_pose = new_pose;
+    }
     else {/*Ignore*/}
   }
 
@@ -112,7 +117,15 @@ class UAVController
     ignition::math::Vector3d force;
     // ignition::math::Vector3d torque;
 
+    {
+      auto esp = this->estimated_pose.Pos();
+      auto rp = this->global_pose.Pos();
+      pos_est << esp.X() << " " << esp.Y() << " " << esp.Z() << std::endl;
+      pos_real << rp.X() << " " << rp.Y() << " " << rp.Z() << std::endl;
+    }
+
     auto mdirection = this->global_pose.Pos() - this->target_position;
+    // auto mdirection = this->estimated_pose.Pos() - this->target_position;
     auto distance = mdirection.Length();
 
     auto x_err = mdirection.X();
@@ -210,6 +223,9 @@ class UAVController
   protected: gazebo::common::PID x_pid;
   protected: gazebo::common::PID y_pid;
   protected: gazebo::common::PID z_pid;
+
+  protected: std::ofstream pos_est{"./logs/position_est.dat"};
+  protected: std::ofstream pos_real{"./logs/position_real.dat"};
 
   private: gazebo::transport::SubscriberPtr camera_sub;
   private: gazebo::transport::SubscriberPtr marker_sub;
