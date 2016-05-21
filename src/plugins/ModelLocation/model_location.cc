@@ -68,7 +68,12 @@ void ModelLocation::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
         << std::endl;
 
   this->lastUpdateTime = common::Time(0.0);
-  this->updatePeriod = common::Time(1.0/200);
+
+  double update_rate = 10;
+  if (_sdf->HasElement("update_rate"))
+    update_rate = _sdf->GetElement("update_rate")->Get<double>();
+
+  this->updatePeriod = common::Time(1.0/update_rate);
 
   this->updateConnection = event::Events::ConnectWorldUpdateBegin(
       boost::bind(&ModelLocation::OnUpdate, this, _1));
