@@ -22,7 +22,7 @@
           <script>
             <uri>model://aruco_diamond1234/materials/scripts</uri>
             <uri>model://aruco_diamond1234/materials/textures</uri>
-            <name>ar/diamond1</name>
+            <name>ar/diamond0</name>
           </script>
         </material>
       </visual>

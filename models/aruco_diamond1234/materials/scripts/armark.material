@@ -1,47 +1,170 @@
 abstract material ar/diamond_base
 {
-	technique
-	{
-		pass
-		{
-			ambient 0.8 0.8 0.8 1.0
-			diffuse 0.95 0.95 0.95 1.0
-			specular 0.2 0.2 0.2 1.0 12.5
+  technique
+  {
+    pass
+    {
+      ambient 0.8 0.8 0.8 1.0
+      diffuse 0.95 0.95 0.95 1.0
+      specular 0.2 0.2 0.2 1.0 12.5
 
-			texture_unit
-			{
-				filtering none
-				scale 1.0 1.0
-				rotate 90
-			}
-		}
-	}
+      texture_unit
+      {
+        filtering anisotropic
+        max_anisotropy 8
+        scale 1.0 1.0
+        rotate 90
+      }
+    }
+  }
 }
-
-material ar/diamond1 : ar/diamond_base {
-	technique {
-		pass {
-			texture_unit {
-				texture diamond_1_2_3_4_d1_128_64.png
+material ar/diamond0 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_0_128_96.png
 }}}}
-
-material ar/diamond5 : ar/diamond_base {
-	technique {
-		pass {
-			texture_unit {
-				texture diamond_5_6_7_8_d1_128_64.png
+material ar/diamond4 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_4_128_96.png
 }}}}
-
-material ar/diamond9 : ar/diamond_base {
-	technique {
-		pass {
-			texture_unit {
-				texture diamond_9_10_11_12_d1_128_64.png
+material ar/diamond8 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_8_128_96.png
 }}}}
-
-material ar/diamond13 : ar/diamond_base {
-	technique {
-		pass {
-			texture_unit {
-				texture diamond_13_14_15_16_d1_128_64.png
+material ar/diamond12 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_12_128_96.png
+}}}}
+material ar/diamond16 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_16_128_96.png
+}}}}
+material ar/diamond20 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_20_128_96.png
+}}}}
+material ar/diamond24 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_24_128_96.png
+}}}}
+material ar/diamond28 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_28_128_96.png
+}}}}
+material ar/diamond32 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_32_128_96.png
+}}}}
+material ar/diamond36 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_36_128_96.png
+}}}}
+material ar/diamond40 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_40_128_96.png
+}}}}
+material ar/diamond44 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_44_128_96.png
+}}}}
+material ar/diamond48 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_48_128_96.png
+}}}}
+material ar/diamond52 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_52_128_96.png
+}}}}
+material ar/diamond56 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_56_128_96.png
+}}}}
+material ar/diamond60 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_60_128_96.png
+}}}}
+material ar/diamond64 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_64_128_96.png
+}}}}
+material ar/diamond68 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_68_128_96.png
+}}}}
+material ar/diamond72 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_72_128_96.png
+}}}}
+material ar/diamond76 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_76_128_96.png
+}}}}
+material ar/diamond80 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_80_128_96.png
+}}}}
+material ar/diamond84 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_84_128_96.png
+}}}}
+material ar/diamond88 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_88_128_96.png
+}}}}
+material ar/diamond92 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_92_128_96.png
+}}}}
+material ar/diamond96 : ar/diamond_base {
+  technique {
+    pass {
+      texture_unit {
+        texture diamond_96_128_96.png
 }}}}
