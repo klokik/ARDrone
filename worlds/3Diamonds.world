@@ -91,7 +91,7 @@
       <real_time>132 40443185</real_time>
       <wall_time>1463079911 147900603</wall_time>
       <iterations>129134</iterations>
-      <model name='ar_diamond_1'>
+      <model name='ar_diamond_0'>
         <pose frame=''>0.274605 0.392839 0.005 0 0 -0.531324</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -101,7 +101,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='ar_diamond_5'>
+      <model name='ar_diamond_4'>
         <pose frame=''>-0.447034 -0.070605 0.005 0 -0 0.61704</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -111,7 +111,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='ar_diamond_9'>
+      <model name='ar_diamond_8'>
         <pose frame=''>0.231686 -0.421243 0.005 0 -0 0.46269</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -260,7 +260,7 @@
         <gravity>0</gravity>
       </link>
     </model>
-    <model name='ar_diamond_1'>
+    <model name='ar_diamond_0'>
       <static>1</static>
       <pose frame=''>0.619463 0.072396 0.005 0 -0 0</pose>
       <plugin name='model_location' filename='libmodel_location.so'/>
@@ -296,7 +296,7 @@
             <script>
               <uri>model://aruco_diamond1234/materials/scripts</uri>
               <uri>model://aruco_diamond1234/materials/textures</uri>
-              <name>ar/diamond1</name>
+              <name>ar/diamond0</name>
             </script>
           </material>
         </visual>
@@ -306,7 +306,7 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name='ar_diamond_5'>
+    <model name='ar_diamond_4'>
       <static>1</static>
       <pose frame=''>0.397936 0.392839 0.005 0 -0 0</pose>
       <plugin name='model_location' filename='libmodel_location.so'/>
@@ -342,7 +342,7 @@
             <script>
               <uri>model://aruco_diamond1234/materials/scripts</uri>
               <uri>model://aruco_diamond1234/materials/textures</uri>
-              <name>ar/diamond5</name>
+              <name>ar/diamond4</name>
             </script>
           </material>
         </visual>
@@ -352,7 +352,7 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name='ar_diamond_9'>
+    <model name='ar_diamond_8'>
       <static>1</static>
       <pose frame=''>0.231686 -0.421243 0.005 0 -0 0</pose>
       <plugin name='model_location' filename='libmodel_location.so'/>
@@ -388,7 +388,7 @@
             <script>
               <uri>model://aruco_diamond1234/materials/scripts</uri>
               <uri>model://aruco_diamond1234/materials/textures</uri>
-              <name>ar/diamond9</name>
+              <name>ar/diamond8</name>
             </script>
           </material>
         </visual>

@@ -54,23 +54,20 @@ void cb(ConstImageStampedPtr &_msg)
   image_mutex.unlock();
 }
 
-void poseMsg(ConstPosePtr &_msg)
+void poseMsg(ConstPoseStampedPtr &_msg)
 {
-  auto mpos = _msg->position();
-  auto mrot = _msg->orientation();
+  auto new_pose = gazebo::msgs::ConvertIgn(_msg->pose());
 
-  auto new_pose = ignition::math::Pose3d(
-      ignition::math::Vector3d(mpos.x(), mpos.y(), mpos.z()),
-      ignition::math::Quaterniond(mrot.w(), mrot.x(), mrot.y(), mrot.z()));
+  std::string p_name = _msg->pose().name();
 
-  if (_msg->name() == "camera_0")
+  if (p_name == "camera_0")
     camera_pose_global = new_pose;
-  else if(_msg->name() == "ar_diamond_1")
-    markers->operator[](cv::Vec4i(1, 2, 3, 4)) = new_pose;
-  else if(_msg->name() == "ar_diamond_5")
-    markers->operator[](cv::Vec4i(5, 6, 7, 8)) = new_pose;
-  else if(_msg->name() == "ar_diamond_9")
-    markers->operator[](cv::Vec4i(9, 10, 11, 12)) = new_pose;
+  else if(p_name == "ar_diamond_0")
+    markers->operator[](cv::Vec4i(0, 1, 2, 3)) = new_pose;
+  else if(p_name == "ar_diamond_4")
+    markers->operator[](cv::Vec4i(4, 5, 6, 7)) = new_pose;
+  else if(p_name == "ar_diamond_8")
+    markers->operator[](cv::Vec4i(8, 9, 10, 11)) = new_pose;
   else {/*Ignore*/}
 }
 
@@ -91,9 +88,9 @@ int main(int _argc, char **_argv)
   gazebo::transport::SubscriberPtr pose_sub_cam =
       node->Subscribe("~/camera_0/pose/info", poseMsg);
 
-  auto pose_sub_diam1 = node->Subscribe("~/ar_diamond_1/pose/info", poseMsg);
-  auto pose_sub_diam5 = node->Subscribe("~/ar_diamond_5/pose/info", poseMsg);
-  auto pose_sub_diam9 = node->Subscribe("~/ar_diamond_9/pose/info", poseMsg);
+  auto pose_sub_diam1 = node->Subscribe("~/ar_diamond_0/pose/info", poseMsg);
+  auto pose_sub_diam5 = node->Subscribe("~/ar_diamond_4/pose/info", poseMsg);
+  auto pose_sub_diam9 = node->Subscribe("~/ar_diamond_8/pose/info", poseMsg);
 
   std::string box_mod_address = "~/box/pose/modify";
   gazebo::transport::PublisherPtr box_pub =
