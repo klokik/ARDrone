@@ -44,6 +44,9 @@ class UAVController
   public: auto getEstimatedPose()
   { return this->estimated_pose; }
 
+  public: auto getEstimatedVelocity()
+  { return this->estimated_velocity; }
+
   // [not implemented yet]
   public: void showDebugPose();
 
@@ -87,7 +90,7 @@ class UAVController
       if (!pose_history.empty())
       {
         auto dt = (new_time - this->pose_history.rbegin()->first).Double();
-        std::cout << dt << std::endl;
+        // std::cout << dt << std::endl;
         this->estimated_velocity =
             (new_pose.Pos() - this->pose_history.rbegin()->second.Pos())/dt;
       }
@@ -326,6 +329,8 @@ int main(int _argc, char **_argv)
     traj.addWaypoint(1, ignition::math::Vector3d(x, y, z));
   }
 
+  std::vector<double> velocities;
+
   int32_t loop_time = 10;
   while (true)
   {
@@ -344,6 +349,14 @@ int main(int _argc, char **_argv)
 
     uav_ctrl.setTargetPoint(traj.getTrajectoryPoint());
     uav_ctrl.update(dt);
+
+    velocities.push_back(uav_ctrl.getEstimatedVelocity().Length());
+
+    double sum = 0;
+    for (auto item : velocities)
+      sum += item;
+
+    std::cout << "Avg Vel: " << sum/velocities.size() << std::endl;
   }
 
   std::cout << "Shutting down" << std::endl;

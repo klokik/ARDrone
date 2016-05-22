@@ -1,0 +1,11 @@
+set terminal qt
+
+set xrange [0:10]
+#set yrange []
+set grid
+
+set xlabel "distance"
+set ylabel "error"
+
+set ticslevel 1
+plot "logs/length-err.dat"

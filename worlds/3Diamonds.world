@@ -198,7 +198,9 @@
     </model>
     <model name='camera_0'>
       <pose frame=''>0.169474 -1.50903 0.05 0 -0 0</pose>
-      <plugin name='model_location' filename='libmodel_location.so'/>
+      <plugin name='model_location' filename='libmodel_location.so'>
+        <update_rate>100</update_rate>
+      </plugin>>
       <link name='camera_0::link'>
         <inertial>
           <mass>0.1</mass>

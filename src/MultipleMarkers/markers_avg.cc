@@ -6,6 +6,7 @@
 #include <ignition/math/Pose3.hh>
 
 #include <iostream>
+#include <fstream>
 #include <cassert>
 #include <cstring>
 #include <mutex>
@@ -89,8 +90,8 @@ int main(int _argc, char **_argv)
       node->Subscribe("~/camera_0/pose/info", poseMsg);
 
   auto pose_sub_diam1 = node->Subscribe("~/ar_diamond_0/pose/info", poseMsg);
-  auto pose_sub_diam5 = node->Subscribe("~/ar_diamond_4/pose/info", poseMsg);
-  auto pose_sub_diam9 = node->Subscribe("~/ar_diamond_8/pose/info", poseMsg);
+  // auto pose_sub_diam5 = node->Subscribe("~/ar_diamond_4/pose/info", poseMsg);
+  // auto pose_sub_diam9 = node->Subscribe("~/ar_diamond_8/pose/info", poseMsg);
 
   std::string box_mod_address = "~/box/pose/modify";
   gazebo::transport::PublisherPtr box_pub =
@@ -109,6 +110,11 @@ int main(int _argc, char **_argv)
 
   locator.setWorldFeatures(markers);
 
+  // std::ofstream ofs("./logs/length-err.dat");
+  std::ofstream ofs("./logs/length-err-single.dat");
+
+  std::vector<double> errors;
+
   float t = 0;
   int frames = 10;
   while (true)
@@ -126,8 +132,14 @@ int main(int _argc, char **_argv)
       box_pose = locator.getEstimatedPosition(gazebo::common::Time::GetWallTime());
       frames--;
 
-      std::cout << "Err: " << (box_pose.Pos() - camera_pose_global.Pos()).Length()
-                << std::endl;
+      double err = (box_pose.Pos() - camera_pose_global.Pos()).Length();
+
+      if (err < 0.3)
+        errors.push_back(err);
+
+      ofs << camera_pose_global.Pos().Length() << " "
+          << err << std::endl;
+      std::cout << "Err: " << err << std::endl;
 
       gazebo::msgs::Pose msgp;
 
@@ -155,6 +167,13 @@ int main(int _argc, char **_argv)
     if (cv::waitKey(16) == 27)
       break;
   }
+  ofs.close();
+
+  double sum = 0;
+  for (auto item : errors)
+    sum += item*item;
+
+  std::cout << "Msq: " << std::sqrt(sum/errors.size()) << std::endl;
 
   gazebo::client::shutdown();
 }
