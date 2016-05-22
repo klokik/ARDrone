@@ -63,7 +63,7 @@ void ModelLocation::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
         << std::endl;
 
   // Create publisher
-  this->posePublisher = node->Advertise<msgs::Pose>(poseTopicName + "info");
+  this->posePublisher = node->Advertise<msgs::PoseStamped>(poseTopicName + "info");
   gzmsg << "[model_location] Posting object poses to: "<< poseTopicName+"info"
         << std::endl;
 
@@ -89,9 +89,7 @@ void ModelLocation::OnUpdate(const common::UpdateInfo &_info)
 
   if (this->posePublisher->HasConnections())
   {
-    msgs::Pose msg;
-
-    msg.set_name(this->model->GetName());
+    msgs::PoseStamped msg;
 
     // Dumb gazebo::math <-> ignition::math incompatibility
     auto gm_pose = this->model->GetWorldPose();
@@ -103,8 +101,12 @@ void ModelLocation::OnUpdate(const common::UpdateInfo &_info)
                                 gm_pose.rot.y,
                                 gm_pose.rot.z);
 
-    msgs::Set(msg.mutable_position(), pose.Pos());
-    msgs::Set(msg.mutable_orientation(), pose.Rot());
+    msgs::Set(msg.mutable_time(), this->world->GetSimTime());
+    msgs::Set(msg.mutable_pose(), pose);
+
+    msg.mutable_pose()->set_name(this->model->GetName());
+    // msgs::Set(msg.mutable_position(), pose.Pos());
+    // msgs::Set(msg.mutable_orientation(), pose.Rot());
 
     this->posePublisher->Publish(msg);
   }

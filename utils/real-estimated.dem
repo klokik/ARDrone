@@ -1,8 +1,13 @@
 set terminal qt
 
-set xrange [-17:17]
-set yrange [-17:17]
+set xrange [-10:10]
+set yrange [-10:10]
 set zrange [0:10]
 set grid
-set ticslevel 0
-splot "logs/position_est.dat" u 1:2:3 with lines, "logs/position_real.dat" u 1:2:3 with lines
+
+set xlabel "X"
+set ylabel "Y"
+set zlabel "Z"
+
+set ticslevel 1
+splot "logs/position_est.dat" u 1:2:3, "logs/position_real.dat" u 1:2:3 with lines

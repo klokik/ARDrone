@@ -23,7 +23,7 @@ class UAVController
   protected: struct IMUFrame
   {
     gazebo::common::Time stamp;
-    ignition::math::Quaterniond orientation; 
+    ignition::math::Quaterniond orientation;
     ignition::math::Vector3d angular_vel;
     ignition::math::Vector3d linear_acc;
   };
@@ -74,21 +74,28 @@ class UAVController
     return (this->global_pose.Pos() - this->target_position).Length();
   }
 
-  // TODO: Use pose_stamped
-  protected: void uavPoseMsg(ConstPosePtr &_msg)
+  protected: void uavPoseMsg(ConstPoseStampedPtr &_msg)
   {
-    auto mpos = _msg->position();
-    auto mrot = _msg->orientation();
+    auto new_pose = gazebo::msgs::ConvertIgn(_msg->pose());
+    auto new_time = gazebo::msgs::Convert(_msg->time());
 
-    auto new_pose = ignition::math::Pose3d(
-        ignition::math::Vector3d(mpos.x(), mpos.y(), mpos.z()),
-        ignition::math::Quaterniond(mrot.w(), mrot.x(), mrot.y(), mrot.z()));
-
-    if (_msg->name() == this->model_name)
+    if (_msg->pose().name() == this->model_name)
     {
       this->global_pose = new_pose;
       // DEBUG
       this->estimated_pose = new_pose;
+      if (!pose_history.empty())
+      {
+        auto dt = (new_time - this->pose_history.rbegin()->first).Double();
+        std::cout << dt << std::endl;
+        this->estimated_velocity =
+            (new_pose.Pos() - this->pose_history.rbegin()->second.Pos())/dt;
+      }
+      this->pose_history.push_back(
+          std::pair<gazebo::common::Time, ignition::math::Pose3d>(
+              new_time, new_pose));
+      while (this->pose_history.size() > pose_q_size)
+        this->pose_history.pop_front();
     }
     else {/*Ignore*/}
   }
@@ -124,8 +131,8 @@ class UAVController
       pos_real << rp.X() << " " << rp.Y() << " " << rp.Z() << std::endl;
     }
 
-    auto mdirection = this->global_pose.Pos() - this->target_position;
-    // auto mdirection = this->estimated_pose.Pos() - this->target_position;
+    // auto mdirection = this->global_pose.Pos() - this->target_position;
+    auto mdirection = this->estimated_pose.Pos() - this->target_position;
     auto distance = mdirection.Length();
 
     auto x_err = mdirection.X();
@@ -190,12 +197,11 @@ class UAVController
   {
     if (!this->imu_history.empty())
     {
-      auto dt_v = _frame.stamp - this->imu_history.back().stamp;
+      auto dt_v = (_frame.stamp - this->imu_history.back().stamp).Double();
 
-      // THIS CODE IS PROBABLY WRONG
-      this->estimated_speed += _frame.orientation*_frame.linear_acc*dt_v.Double();
-      this->estimated_pose.Pos() += this->estimated_speed*dt_v.Double();
-      // throw std::runtime_error("not tested code");
+      ignition::math::Vector3d gravity(0, 0, -9.8);
+      this->estimated_velocity += (_frame.linear_acc+gravity)*dt_v;
+      this->estimated_pose.Pos() += this->estimated_velocity*dt_v;
     }
 
     this->imu_history.push(_frame);
@@ -210,7 +216,7 @@ class UAVController
   protected: const int pose_q_size = 8;
   protected: const int imu_q_size = 100;
   protected: const int or_q_size = 20;
-  protected: std::queue<std::pair<gazebo::common::Time, ignition::math::Pose3d>> pose_history;
+  protected: std::deque<std::pair<gazebo::common::Time, ignition::math::Pose3d>> pose_history;
   protected: std::queue<IMUFrame> imu_history;
   protected: std::deque<ignition::math::Quaterniond> orientation_history;
 
@@ -218,7 +224,7 @@ class UAVController
 
   protected: ignition::math::Pose3d estimated_pose; // Cameras estimated pose + cumulative imu data
   protected: ignition::math::Pose3d global_pose;    // Beforehand known pose
-  protected: ignition::math::Vector3d estimated_speed;
+  protected: ignition::math::Vector3d estimated_velocity;
 
   protected: gazebo::common::PID x_pid;
   protected: gazebo::common::PID y_pid;
@@ -309,7 +315,7 @@ int main(int _argc, char **_argv)
 
   for (double phi = 0; phi < M_PI*2; phi += 0.1)
   {
-    double R = 10;
+    double R = 5;
 
     double r = std::cos(phi*3)*R;
 
